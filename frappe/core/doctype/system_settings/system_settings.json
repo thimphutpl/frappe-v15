@@ -457,9 +457,10 @@
    "fieldtype": "Section Break"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "disable_system_update_notification",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Disable System Update Notification"
   },
   {
@@ -669,7 +670,7 @@
  "icon": "fa fa-cog",
  "issingle": 1,
  "links": [],
- "modified": "2024-03-22 15:43:48.347441",
+ "modified": "2024-09-02 10:23:02.563026",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "System Settings",
