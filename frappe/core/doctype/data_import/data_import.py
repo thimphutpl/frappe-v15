@@ -27,9 +27,10 @@ class DataImport(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		child_doctype: DF.Link | None
 		google_sheets_url: DF.Data | None
 		import_file: DF.Attach | None
-		import_type: DF.Literal["", "Insert New Records", "Update Existing Records"]
+		import_type: DF.Literal["", "Insert New Records", "Update Existing Records", "Insert Child Records"]
 		mute_emails: DF.Check
 		payload_count: DF.Int
 		reference_doctype: DF.Link
@@ -249,7 +250,7 @@ def import_file(doctype, file_path, import_type, submit_after_import=False, cons
 		"Insert New Records" if import_type.lower() == "insert" else "Update Existing Records"
 	)
 
-	i = Importer(doctype=doctype, file_path=file_path, data_import=data_import, console=console)
+	i = Importer(doctype=doctype, file_path=file_path, data_import=data_import, console=console,)
 	i.import_data()
 
 

@@ -95,15 +95,7 @@ class EmailAccount(Document):
 		password: DF.Password | None
 		send_notification_to: DF.SmallText | None
 		send_unsubscribe_message: DF.Check
-		service: DF.Literal[
-			"",
-			"GMail",
-			"Sendgrid",
-			"SparkPost",
-			"Yahoo Mail",
-			"Outlook.com",
-			"Yandex.Mail",
-		]
+		service: DF.Literal["", "GMail", "Sendgrid", "SparkPost", "Yahoo Mail", "Outlook.com", "Yandex.Mail"]
 		signature: DF.TextEditor | None
 		smtp_port: DF.Data | None
 		smtp_server: DF.Data | None

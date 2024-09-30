@@ -158,7 +158,7 @@
    "type": "Link"
   }
  ],
- "modified": "2024-01-02 15:39:13.811700",
+ "modified": "2024-09-12 20:06:41.746133",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "Users",
@@ -169,16 +169,30 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 13.0,
+ "sequence_id": 38.0,
  "shortcuts": [
   {
-   "label": "User",
-   "link_to": "User",
+   "color": "Yellow",
+   "doc_view": "",
+   "label": "Role",
+   "link_to": "Role",
+   "stats_filter": "[]",
    "type": "DocType"
   },
   {
-   "label": "Role",
-   "link_to": "Role",
+   "color": "Yellow",
+   "doc_view": "",
+   "label": "User",
+   "link_to": "User",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Yellow",
+   "doc_view": "",
+   "label": "User Type",
+   "link_to": "User Type",
+   "stats_filter": "[]",
    "type": "DocType"
   },
   {
@@ -190,12 +204,6 @@
    "label": "User Profile",
    "link_to": "user-profile",
    "type": "Page"
-  },
-  {
-   "doc_view": "",
-   "label": "User Type",
-   "link_to": "User Type",
-   "type": "DocType"
   }
  ],
  "title": "Users"

@@ -2,6 +2,7 @@
 	background-color: {{ theme.top_bar_color }};
 	background-repeat: repeat-x;
 	background-image: none;
+	background-color:yellow;
 	border: none;
 	border-bottom: 1px solid {{ theme.top_bar_color }};
 	padding-top: 15px;

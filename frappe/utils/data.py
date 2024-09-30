@@ -1354,7 +1354,7 @@ def money_in_words(
 				out + " " + _("and") + " " + in_words(fraction, in_million).title() + " " + fraction_currency
 			)
 
-	return out + " " + _("only.")
+	return out + " " + _("Only")
 
 
 #

@@ -6,6 +6,8 @@ import os
 import re
 import timeit
 from datetime import date, datetime, time
+from six import text_type, string_types
+import collections
 
 import frappe
 from frappe import _
@@ -22,11 +24,12 @@ INVALID_VALUES = ("", None)
 MAX_ROWS_IN_PREVIEW = 10
 INSERT = "Insert New Records"
 UPDATE = "Update Existing Records"
+INSERT_CHILD = "Insert Child Records"
 DURATION_PATTERN = re.compile(r"^(?:(\d+d)?((^|\s)\d+h)?((^|\s)\d+m)?((^|\s)\d+s)?)$")
 
 
 class Importer:
-	def __init__(self, doctype, data_import=None, file_path=None, import_type=None, console=False):
+	def __init__(self, doctype, data_import=None, file_path=None, import_type=None, console=False,child_doc = None):
 		self.doctype = doctype
 		self.console = console
 
@@ -37,6 +40,7 @@ class Importer:
 				self.data_import.import_type = import_type
 
 		self.template_options = frappe.parse_json(self.data_import.template_options or "{}")
+		self.child_doctype = self.data_import.child_doctype
 		self.import_type = self.data_import.import_type
 
 		self.import_file = ImportFile(
@@ -45,6 +49,7 @@ class Importer:
 			self.template_options,
 			self.import_type,
 			console=self.console,
+			child_doctype = self.data_import.child_doctype
 		)
 
 	def get_data_for_import_preview(self):
@@ -251,6 +256,8 @@ class Importer:
 			return self.insert_record(doc)
 		elif self.import_type == UPDATE:
 			return self.update_record(doc)
+		elif self.import_type == INSERT_CHILD:
+			return self.insert_child_record(doc)
 
 	def insert_record(self, doc):
 		meta = frappe.get_meta(self.doctype)
@@ -271,6 +278,34 @@ class Importer:
 		if meta.is_submittable and self.data_import.submit_after_import:
 			new_doc.submit()
 		return new_doc
+
+	def insert_child_record(self, doc):
+		parent = None
+		for key, a in doc.items():
+			if key == "name":
+				parent = a
+			if not isinstance(a, str) and parent and not isinstance(a, (int, float)):
+				for b in a:
+					meta = frappe.get_meta(self.child_doctype)
+					new_doc = frappe.new_doc(self.child_doctype)
+					new_doc.parent = parent
+					new_doc.parenttype = self.doctype
+					new_doc.parentfield = key
+					new_doc.update(b)
+					if not b.name and (meta.autoname or "").lower() != "prompt":
+						# name can only be set directly if autoname is prompt
+						new_doc.set("name", None)
+
+					new_doc.flags.updater_reference = {
+						"doctype": self.data_import.doctype,
+						"docname": self.data_import.name,
+						"label": _("via Data Import"),
+					}
+
+					new_doc.insert()
+					if meta.is_submittable and self.data_import.submit_after_import:
+						new_doc.submit()
+					return new_doc
 
 	def update_record(self, doc):
 		id_field = get_id_field(self.doctype)
@@ -402,8 +437,9 @@ class Importer:
 
 
 class ImportFile:
-	def __init__(self, doctype, file, template_options=None, import_type=None, *, console=False):
+	def __init__(self, doctype, file, template_options=None, import_type=None, *, console=False,child_doctype=None):
 		self.doctype = doctype
+		self.child_doctype = doctype
 		self.template_options = template_options or frappe._dict(column_to_field_map=frappe._dict())
 		self.column_to_field_map = self.template_options.column_to_field_map
 		self.import_type = import_type
@@ -615,10 +651,11 @@ class ImportFile:
 
 
 class Row:
-	def __init__(self, index, row, doctype, header, import_type):
+	def __init__(self, index, row, doctype, header, import_type,child_doctype = None):
 		self.index = index
 		self.row_number = index + 1
 		self.doctype = doctype
+		self.child_doctype = child_doctype
 		self.data = row
 		self.header = header
 		self.import_type = import_type
@@ -1273,3 +1310,59 @@ def create_import_log(data_import, log_index, log_details):
 			"exception": log_details.get("exception"),
 		}
 	).db_insert()
+
+
+@frappe.whitelist()
+def upload(rows = None, submit_after_import=None, ignore_encoding_errors=False, no_email=True, overwrite=None,
+	update_only = None, ignore_links=False, pre_process=None, via_console=False, from_data_import="No",
+	skip_errors = True, data_import_doc=None, validate_template=False, user=None):
+	"""upload data"""
+
+	# for translations
+	if user:
+		frappe.cache().hdel("lang", user)
+		frappe.set_user_lang(user)
+
+	if data_import_doc and isinstance(data_import_doc, string_types):
+		data_import_doc = frappe.get_doc("Data Import", data_import_doc)
+	if data_import_doc and from_data_import == "Yes":
+		no_email = data_import_doc.no_email
+		ignore_encoding_errors = data_import_doc.ignore_encoding_errors
+		update_only = data_import_doc.only_update
+		submit_after_import = data_import_doc.submit_after_import
+		overwrite = data_import_doc.overwrite
+		skip_errors = data_import_doc.skip_errors
+	else:
+		# extra input params
+		params = json.loads(frappe.form_dict.get("params") or '{}')
+		if params.get("submit_after_import"):
+			submit_after_import = True
+		if params.get("ignore_encoding_errors"):
+			ignore_encoding_errors = True
+		if not params.get("no_email"):
+			no_email = False
+		if params.get('update_only'):
+			update_only = True
+		if params.get('from_data_import'):
+			from_data_import = params.get('from_data_import')
+		if not params.get('skip_errors'):
+			skip_errors = params.get('skip_errors')
+
+	frappe.flags.in_import = True
+	frappe.flags.mute_emails = no_email
+
+	def get_data_keys_definition():
+		return get_data_keys()
+
+	def bad_template():
+		frappe.throw(_("Please do not change the rows above {0}").format(get_data_keys_definition().data_separator))
+
+	def check_data_length():
+		if not data:
+			frappe.throw(_("No data found in the file. Please reattach the new file with data."))
+
+	def get_start_row():
+		for i, row in enumerate(rows):
+			if row and row[0]==get_data_keys_definition().data_separator:
+				return i+1
+		bad_template()
