@@ -145,6 +145,7 @@ class UserProfile {
 			});
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	render_percentage_chart(field, title) {
 		frappe
 			.xcall(
