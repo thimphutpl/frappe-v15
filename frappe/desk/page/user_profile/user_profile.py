@@ -315,6 +315,29 @@ def get_leave_entries(employee, leave_type, from_date, to_date):
 		"leave_type": leave_type
 	}, as_dict=1)
 
+# ---- Employee Asset Detail ------
+@frappe.whitelist()
+def get_asset_details(user):
+	emp = frappe.db.sql("""
+						SELECT name, employee_name FROM `tabEmployee` WHERE user_id = %s
+						""", user, as_dict=True)
+	if not emp:
+		frappe.throw(f"Your User ID {user} is not mapped with an Employee. Please contact HR.")
+	employee = emp[0].get('name')
+	
+	query = frappe.db.sql("""
+							SELECT 
+								a.name, a.asset_name, a.purchase_date, a.gross_purchase_amount, a.status 
+							FROM 
+								`tabAsset` as a 
+							WHERE a.docstatus = 1
+					   		and custodian = %s
+							and a.status in ('Submitted','Partially Depreciated','Fully Depreciated')
+						""", employee, as_dict=True)
+
+	return query
+	# frappe.throw("Wait! Nyuethyue is working on User Profile.")
+
 @frappe.whitelist()
 def make_employee_checkin(employee, employee_name, shift_type, time, time_difference, reason=None, checkin_type = None):
 	if checkin_type != "":
