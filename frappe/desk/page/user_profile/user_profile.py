@@ -630,3 +630,8 @@ def get_energy_points_list(start, limit, user):
 		limit=limit,
 		order_by="creation desc",
 	)
+
+@frappe.whitelist()
+def get_user_roles(user):
+    role = frappe.get_roles(user)
+    return role

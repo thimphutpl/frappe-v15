@@ -46,6 +46,68 @@ class UserProfile {
 		this.setup_transaction_link();
 		this.main_section.empty().append(frappe.render_template('user_profile'));
 		this.render_user_details();
+		frappe.call({
+			method: 'frappe.desk.page.user_profile.user_profile.get_user_roles',  // Use your actual module path here
+			args: {
+				user: this.user_id
+			},
+			callback: (response) => {
+				// Ensure the response is valid
+				if (response) {
+					let foundDashboardManagerOverall = false;
+					let foundDashboardManager = false;
+					
+					// First loop to check for 'Dashboard Manager Overall'
+					for (let i = 0; i < response.message.length; i++) {
+						if (response.message[i] === 'Dashboard Manager Overall') {
+							console.log(response.message[i]);  // Log if role is 'Dashboard Manager Overall'
+							const domain = window.location.origin; 
+							this.main_section.append(`
+								<p style="font-size: 18px; color: blue; padding-left:15px;font-weight: bold;"> 
+									<a href="${domain}/app/dashboard-view/Master%20Dashboard" style="color: red; text-decoration: none;">
+										View Dashboard
+									</a>
+								</p>
+							`);
+							foundDashboardManagerOverall = true;
+							break;  // Exit the loop once 'Dashboard Manager Overall' is found
+						}
+					}
+		
+					// If 'Dashboard Manager Overall' was not found, check for 'Dashboard Manager'
+					if (!foundDashboardManagerOverall) {
+						for (let i = 0; i < response.message.length; i++) {
+							if (response.message[i] === 'Dashboard Manager') {
+								console.log(response.message[i]);  // Log if role is 'Dashboard Manager'
+								const domain = window.location.origin; 
+								this.main_section.append(`
+									<p style="font-size: 18px; color: blue;font-weight: bold;">
+										<a href="${domain}/app/dashboard-view/Agency%20Head%20Dashboard" style="color: red; text-decoration: none;">
+											View Dashboard
+										</a>
+									</p>
+								`);
+								break;  // Exit the loop once 'Dashboard Manager' is found
+							}
+						}
+					}
+				}
+			}
+		});
+		
+		// if (this.user_id === "Administrator") {
+		// 	role = frappe.get_roles(this.user)
+		// 	const domain = window.location.origin; 
+		// 	console.log(role)
+		// 	this.main_section.append(`
+		// 	<p style="font-size: 18px; color: blue;">
+		// 		Hello, Admin! 
+		// 		<a href="${domain}/app/dashboard-view/Master%20Dashboard" style="color: red; text-decoration: none;">
+		// 			Go to Dashboard
+		// 		</a>
+		// 	</p>
+		// `);
+    //}
 		if(this.user_id != "Administrator"){
 			this.employee_leave_dashboard();
 			this.employee_asset_dashboard();
