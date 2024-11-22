@@ -59,6 +59,9 @@ def print_has_permission_check_logs(func):
 
 	return inner
 
+def set_user_permission_if_allowed(doctype, name, user, with_message=False):
+	if get_role_permissions(frappe.get_meta(doctype), user).set_user_permissions != 1:
+		add_user_permission(doctype, name, user)
 
 def _debug_log(log: str):
 	if not hasattr(frappe.local, "permission_debug_log"):
