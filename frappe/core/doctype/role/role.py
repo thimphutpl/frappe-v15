@@ -44,7 +44,6 @@ class Role(Document):
 		timeline: DF.Check
 		two_factor_auth: DF.Check
 		view_switcher: DF.Check
-
 	# end: auto-generated types
 	def before_rename(self, old, new, merge=False):
 		if old in STANDARD_ROLES:
