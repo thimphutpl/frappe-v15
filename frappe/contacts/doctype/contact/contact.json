@@ -14,18 +14,29 @@
   "last_name",
   "full_name",
   "email_id",
-  "user",
   "address",
   "sync_with_google_contacts",
   "cb00",
   "status",
   "salutation",
-  "designation",
   "gender",
   "phone",
-  "mobile_no",
   "company_name",
   "image",
+  "contact_detail",
+  "user",
+  "customer",
+  "customer_name",
+  "column_break_mfgc",
+  "supplier",
+  "supplier_name",
+  "sales_partner",
+  "is_primary_contact",
+  "more_info",
+  "mobile_no",
+  "department",
+  "designation",
+  "unsubscribed",
   "sb_00",
   "google_contacts",
   "google_contacts_id",
@@ -35,11 +46,7 @@
   "email_ids",
   "phone_nos",
   "contact_details",
-  "links",
-  "is_primary_contact",
-  "more_info",
-  "department",
-  "unsubscribed"
+  "links"
  ],
  "fields": [
   {
@@ -53,7 +60,8 @@
    "in_global_search": 1,
    "label": "First Name",
    "oldfieldname": "first_name",
-   "oldfieldtype": "Data"
+   "oldfieldtype": "Data",
+   "reqd": 1
   },
   {
    "bold": 1,
@@ -79,9 +87,9 @@
   {
    "fieldname": "user",
    "fieldtype": "Link",
-   "in_global_search": 1,
    "label": "User Id",
-   "options": "User"
+   "options": "User",
+   "search_index": 1
   },
   {
    "fieldname": "cb00",
@@ -134,11 +142,10 @@
   },
   {
    "default": "0",
+   "depends_on": "eval:(doc.customer || doc.supplier || doc.sales_partner)",
    "fieldname": "is_primary_contact",
    "fieldtype": "Check",
-   "label": "Is Primary Contact",
-   "oldfieldname": "is_primary_contact",
-   "oldfieldtype": "Select"
+   "label": "Is Primary Contact"
   },
   {
    "fieldname": "links",
@@ -149,15 +156,17 @@
   {
    "fieldname": "more_info",
    "fieldtype": "Section Break",
-   "label": "More Information",
-   "options": "fa fa-file-text"
+   "label": "More  Information",
+   "options": "icon-file-text"
   },
   {
+   "description": "Enter department to which this Contact belongs",
    "fieldname": "department",
    "fieldtype": "Data",
    "label": "Department"
   },
   {
+   "description": "Enter designation of this Contact",
    "fieldname": "designation",
    "fieldtype": "Data",
    "label": "Designation"
@@ -197,13 +206,6 @@
    "fieldtype": "Table",
    "label": "Contact Numbers",
    "options": "Contact Phone"
-  },
-  {
-   "fieldname": "mobile_no",
-   "fieldtype": "Data",
-   "label": "Mobile No",
-   "options": "Phone",
-   "read_only": 1
   },
   {
    "default": "0",
@@ -250,6 +252,54 @@
    "hidden": 1,
    "label": "Full Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "contact_detail",
+   "fieldtype": "Section Break",
+   "label": "Reference"
+  },
+  {
+   "bold": 1,
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "bold": 1,
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_mfgc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "bold": 1,
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "label": "Supplier Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sales_partner",
+   "fieldtype": "Link",
+   "label": "Sales Partner",
+   "options": "Sales Partner"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
   }
  ],
  "icon": "fa fa-user",
@@ -257,11 +307,10 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-08 15:52:37.525003",
+ "modified": "2024-11-20 11:13:25.429026",
  "modified_by": "Administrator",
  "module": "Contacts",
  "name": "Contact",
- "name_case": "Title Case",
  "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [

@@ -23,11 +23,13 @@ class Contact(Document):
 
 		address: DF.Link | None
 		company_name: DF.Data | None
+		customer: DF.Link | None
+		customer_name: DF.Data | None
 		department: DF.Data | None
 		designation: DF.Data | None
 		email_id: DF.Data | None
 		email_ids: DF.Table[ContactEmail]
-		first_name: DF.Data | None
+		first_name: DF.Data
 		full_name: DF.Data | None
 		gender: DF.Link | None
 		google_contacts: DF.Link | None
@@ -41,12 +43,14 @@ class Contact(Document):
 		phone: DF.Data | None
 		phone_nos: DF.Table[ContactPhone]
 		pulled_from_google_contacts: DF.Check
+		sales_partner: DF.Link | None
 		salutation: DF.Link | None
 		status: DF.Literal["Passive", "Open", "Replied"]
+		supplier: DF.Link | None
+		supplier_name: DF.Data | None
 		sync_with_google_contacts: DF.Check
 		unsubscribed: DF.Check
 		user: DF.Link | None
-
 	# end: auto-generated types
 	def autoname(self):
 		self.name = self._get_full_name()
