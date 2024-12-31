@@ -14,6 +14,8 @@
   "enable_onboarding",
   "setup_complete",
   "disable_document_sharing",
+  "is_development_server",
+  "text_to_display",
   "date_and_number_format",
   "date_format",
   "time_format",
@@ -665,12 +667,24 @@
    "fieldname": "rate_limit_email_link_login",
    "fieldtype": "Int",
    "label": "Rate limit for email link login"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_development_server",
+   "fieldtype": "Check",
+   "label": "Is Development Server"
+  },
+  {
+   "depends_on": "eval:doc.is_development_server",
+   "fieldname": "text_to_display",
+   "fieldtype": "Data",
+   "label": "Text To Display"
   }
  ],
  "icon": "fa fa-cog",
  "issingle": 1,
  "links": [],
- "modified": "2024-09-10 09:50:34.379975",
+ "modified": "2024-12-21 00:09:14.649754",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "System Settings",

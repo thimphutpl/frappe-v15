@@ -55,6 +55,7 @@ class SystemSettings(Document):
 		force_user_to_reset_password: DF.Int
 		force_web_capture_mode_for_uploads: DF.Check
 		hide_footer_in_auto_email_reports: DF.Check
+		is_development_server: DF.Check
 		language: DF.Link
 		lifespan_qrcode_image: DF.Int
 		link_field_results_limit: DF.Int
@@ -75,6 +76,7 @@ class SystemSettings(Document):
 		setup_complete: DF.Check
 		store_attached_pdf_document: DF.Check
 		strip_exif_metadata_from_uploaded_images: DF.Check
+		text_to_display: DF.Data | None
 		time_format: DF.Literal["HH:mm:ss", "HH:mm"]
 		time_zone: DF.Literal[None]
 		two_factor_method: DF.Literal["OTP App", "SMS", "Email"]
