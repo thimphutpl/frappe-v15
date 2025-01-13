@@ -141,7 +141,7 @@ def validate_filters(data, filters):
 					continue
 				meta, df = get_meta_and_docfield(fieldname, data)
 				if not df:
-					raise_invalid_field(condition[0])
+					 (condition[0])
 			else:
 				# [doctype, fieldname, condition, value]
 				fieldname = condition[1]

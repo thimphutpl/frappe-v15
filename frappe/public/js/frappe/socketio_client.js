@@ -50,6 +50,7 @@ class RealTimeClient {
 				secure: true,
 				withCredentials: true,
 				reconnectionAttempts: 3,
+				rejectUnauthorized: false,
 				autoConnect: !lazy_connect,
 			});
 		} else if (window.location.protocol == "http:") {

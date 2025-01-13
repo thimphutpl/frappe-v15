@@ -652,7 +652,6 @@
    "label": "Form Builder"
   },
   {
-   "collapsible": 1,
    "fieldname": "fields_section",
    "fieldtype": "Section Break",
    "label": "Fields"
@@ -750,7 +749,7 @@
    "link_fieldname": "reference_doctype"
   }
  ],
- "modified": "2023-12-01 18:37:16.799471",
+ "modified": "2024-12-26 17:02:42.725292",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "DocType",
