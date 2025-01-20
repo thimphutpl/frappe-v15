@@ -15,6 +15,8 @@
   "enable_onboarding",
   "setup_complete",
   "disable_document_sharing",
+  "is_development_server",
+  "text_to_display",
   "date_and_number_format",
   "date_format",
   "time_format",
@@ -692,12 +694,23 @@
    "fieldtype": "Link",
    "label": "Currency",
    "options": "Currency"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_development_server",
+   "fieldtype": "Check",
+   "label": "Is Development Server"
+  },
+  {
+   "fieldname": "text_to_display",
+   "fieldtype": "Data",
+   "label": "Text To Display"
   }
  ],
  "icon": "fa fa-cog",
  "issingle": 1,
  "links": [],
- "modified": "2024-11-04 15:51:39.954876",
+ "modified": "2024-12-25 14:16:16.654766",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "System Settings",
