@@ -31,7 +31,7 @@ frappe.ui.form.MultiSelectDialog = class MultiSelectDialog {
 
 	get_result_fields() {
 		const show_next_page = () => {
-			this.page_length += 20;
+			this.page_length += 100;
 			this.get_results();
 		};
 		return [
