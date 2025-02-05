@@ -103,7 +103,8 @@ def validate_phone_number_with_country_code(phone_number: str, fieldname: str) -
 
 	if not phone_number:
 		return
-
+	else:
+		return
 	valid_number = False
 	error_message = _("Phone Number {0} set in field {1} is not valid.")
 	error_title = _("Invalid Phone Number")
