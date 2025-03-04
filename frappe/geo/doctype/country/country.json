@@ -9,10 +9,15 @@
  "engine": "InnoDB",
  "field_order": [
   "country_name",
+  "section_break_vkpp",
+  "items",
+  "section_break_zbzn",
   "date_format",
   "time_format",
   "time_zones",
-  "code"
+  "code",
+  "column_break_kysw",
+  "currency"
  ],
  "fields": [
   {
@@ -49,15 +54,40 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Code"
+  },
+  {
+   "fieldname": "section_break_vkpp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "DSA Detail",
+   "options": "Country DSA Detail"
+  },
+  {
+   "fieldname": "section_break_zbzn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_kysw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
   }
  ],
  "icon": "fa fa-globe",
  "idx": 1,
  "links": [],
- "modified": "2022-08-05 18:33:27.880783",
+ "modified": "2025-03-03 15:16:57.988209",
  "modified_by": "Administrator",
  "module": "Geo",
  "name": "Country",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
