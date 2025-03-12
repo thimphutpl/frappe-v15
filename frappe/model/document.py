@@ -183,7 +183,7 @@ class Document(BaseDocument):
 			if hasattr(self, "doctype") and not hasattr(self, "module") and is_virtual_doctype(df.options):
 				self.set(df.fieldname, [])
 				continue
-
+			
 			children = (
 				frappe.db.get_values(
 					df.options,
