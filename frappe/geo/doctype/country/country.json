@@ -9,6 +9,9 @@
  "engine": "InnoDB",
  "field_order": [
   "country_name",
+  "currency",
+  "column_break_ensu",
+  "disabled",
   "section_break_vkpp",
   "items",
   "section_break_zbzn",
@@ -16,8 +19,7 @@
   "time_format",
   "time_zones",
   "code",
-  "column_break_kysw",
-  "currency"
+  "column_break_kysw"
  ],
  "fields": [
   {
@@ -78,12 +80,22 @@
    "fieldtype": "Link",
    "label": "Currency",
    "options": "Currency"
+  },
+  {
+   "fieldname": "column_break_ensu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
   }
  ],
  "icon": "fa fa-globe",
  "idx": 1,
  "links": [],
- "modified": "2025-03-03 15:16:57.988209",
+ "modified": "2025-04-01 14:29:28.167770",
  "modified_by": "Administrator",
  "module": "Geo",
  "name": "Country",

@@ -19,6 +19,7 @@ class Country(Document):
 		country_name: DF.Data
 		currency: DF.Link | None
 		date_format: DF.Data | None
+		disabled: DF.Check
 		items: DF.Table[CountryDSADetail]
 		time_format: DF.Data | None
 		time_zones: DF.Text | None
