@@ -330,7 +330,8 @@ class Document(BaseDocument):
 
 	def check_if_locked(self):
 		if self.creation and self.is_locked:
-			raise frappe.DocumentLockedError
+			pass
+			# raise frappe.DocumentLockedError
 
 	def save(self, *args, **kwargs):
 		"""Wrapper for _save"""
@@ -924,7 +925,7 @@ class Document(BaseDocument):
 			result = d.get_invalid_links(is_submittable=self.meta.is_submittable)
 			invalid_links.extend(result[0])
 			cancelled_links.extend(result[1])
-
+		
 		if invalid_links:
 			msg = ", ".join(each[2] for each in invalid_links)
 			frappe.throw(_("Could not find {0}").format(msg), frappe.LinkValidationError)

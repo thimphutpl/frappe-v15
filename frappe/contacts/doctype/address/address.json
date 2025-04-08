@@ -157,12 +157,6 @@
    "label": "Reference"
   },
   {
-   "default": "0",
-   "fieldname": "is_your_company_address",
-   "fieldtype": "Check",
-   "label": "Is Your Company Address"
-  },
-  {
    "depends_on": "eval:doc.is_your_company_address",
    "fieldname": "company",
    "fieldtype": "Link",

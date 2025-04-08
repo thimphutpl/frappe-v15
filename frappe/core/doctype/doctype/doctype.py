@@ -134,12 +134,23 @@ class DocType(Document):
 		is_virtual: DF.Check
 		issingle: DF.Check
 		istable: DF.Check
+		link_filters: DF.JSON
 		links: DF.Table[DocTypeLink]
 		make_attachments_public: DF.Check
 		max_attachments: DF.Int
 		migration_hash: DF.Data | None
 		module: DF.Link
-		naming_rule: DF.Literal["", "Set by user", "Autoincrement", "By fieldname", "By \"Naming Series\" field", "Expression", "Expression (old style)", "Random", "By script"]
+		naming_rule: DF.Literal[
+			"",
+			"Set by user",
+			"Autoincrement",
+			"By fieldname",
+			'By "Naming Series" field',
+			"Expression",
+			"Expression (old style)",
+			"Random",
+			"By script",
+		]
 		nsm_parent_field: DF.Data | None
 		permissions: DF.Table[DocPerm]
 		queue_in_background: DF.Check
@@ -212,6 +223,15 @@ class DocType(Document):
 
 		if self.default_print_format and not self.custom:
 			frappe.throw(_("Standard DocType cannot have default print format, use Customize Form"))
+
+	def get_row_size_utilization(doctype: str) -> float:
+		"""Get row size utilization in percentage"""
+
+		frappe.has_permission("DocType", throw=True)
+		try:
+			return flt(frappe.db.get_row_size(doctype) / frappe.db.MAX_ROW_SIZE_LIMIT * 100, 2)
+		except Exception:
+			return 0.0
 
 	def validate_field_name_conflicts(self):
 		"""Check if field names dont conflict with controller properties and methods"""
@@ -1541,6 +1561,15 @@ def validate_fields(meta: Meta):
 				if i == 0 or _option:
 					options_list.append(_option)
 			field.options = "\n".join(options_list)
+
+	def get_row_size_utilization(doctype: str) -> float:
+		"""Get row size utilization in percentage"""
+
+		frappe.has_permission("DocType", throw=True)
+		try:
+			return flt(frappe.db.get_row_size(doctype) / frappe.db.MAX_ROW_SIZE_LIMIT * 100, 2)
+		except Exception:
+			return 0.0
 
 	def validate_fetch_from(field):
 		if not field.get("fetch_from"):

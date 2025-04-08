@@ -378,12 +378,15 @@ def getseries(key, digits):
 	# series created ?
 	# Using frappe.qb as frappe.get_values does not allow order_by=None
 	series = DocType("Series")
-	current = (frappe.qb.from_(series).where(series.name == key).for_update().select("current")).run()
+	# current = (frappe.qb.from_(series).where(series.name == key).for_update().select("current")).run()
+	current = frappe.db.sql("""
+                         select ifnull(current,0) from `tabSeries` where name = '{}' 
+                         """.format(key))
 
 	if current and current[0][0] is not None:
 		current = current[0][0]
 		# yes, update it
-		frappe.db.sql("UPDATE `tabSeries` SET `current` = `current` + 1 WHERE `name`=%s", (key,))
+		frappe.db.sql("UPDATE `tabSeries` SET current = current + 1 WHERE name='{}'".format(key))
 		current = cint(current) + 1
 	else:
 		# no, create it
