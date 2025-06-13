@@ -471,24 +471,24 @@ def add_total_row(result, columns, meta=None, is_tree=False, parent_field=None):
 			options = col.get("options")
 
 		for row in result:
-			if i >= len(row):
-				continue
-			cell = row.get(fieldname) if isinstance(row, dict) else row[i]
-			if fieldtype in ["Currency", "Int", "Float", "Percent", "Duration"] and flt(cell):
-				if not (is_tree and row.get(parent_field)):
-					total_row[i] = flt(total_row[i]) + flt(cell)
+			if str(fieldtype) != "Data":
+				if i >= len(row):
+					continue
+				cell = row.get(fieldname) if isinstance(row, dict) else row[i]
+				if fieldtype in ["Currency", "Int", "Float", "Percent", "Duration"] and flt(cell):
+					if not (is_tree and row.get(parent_field)):
+						total_row[i] = flt(total_row[i]) + flt(cell)
 
-			if fieldtype == "Percent" and i not in has_percent:
-				has_percent.append(i)
+				if fieldtype == "Percent" and i not in has_percent:
+					has_percent.append(i)
 
-			if fieldtype == "Time" and cell:
-				if not total_row[i]:
-					total_row[i] = timedelta(hours=0, minutes=0, seconds=0)
-				total_row[i] = total_row[i] + cell
+				if fieldtype == "Time" and cell:
+					if not total_row[i]:
+						total_row[i] = timedelta(hours=0, minutes=0, seconds=0)
+					total_row[i] = total_row[i] + cell
 
 		if fieldtype == "Link" and options == "Currency":
 			total_row[i] = result[0].get(fieldname) if isinstance(result[0], dict) else result[0][i]
-
 	for i in has_percent:
 		total_row[i] = flt(total_row[i]) / len(result)
 

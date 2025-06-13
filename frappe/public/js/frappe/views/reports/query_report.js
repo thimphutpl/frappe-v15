@@ -1245,7 +1245,12 @@ frappe.views.QueryReport = class QueryReport extends frappe.views.BaseList {
 						// proxy for currency and float
 						data = this.data[0];
 					}
+					else if(column.fieldtype = "Data"){
+						value = "";
+					}
 				}
+
+
 				return frappe.format(
 					value,
 					column,

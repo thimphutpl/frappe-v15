@@ -320,8 +320,8 @@
    "type": "Link"
   }
  ],
- "modified": "2024-01-02 15:47:12.939478",
- "modified_by": "Administrator",
+ "modified": "2025-05-28 11:01:11.452628",
+ "modified_by": "kalden.dorji@thimphutechpark.bt",
  "module": "Automation",
  "name": "Tools",
  "number_cards": [],
@@ -331,7 +331,7 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 17.0,
+ "sequence_id": 21.0,
  "shortcuts": [
   {
    "color": "Grey",

@@ -1430,7 +1430,6 @@ frappe.views.ReportView = class ReportView extends frappe.views.ListView {
 		}
 
 		const row_totals = {};
-
 		this.columns.forEach((col, i) => {
 			const totals = data.reduce((totals, d) => {
 				if (col.id in d && frappe.model.is_numeric_field(col.docfield)) {

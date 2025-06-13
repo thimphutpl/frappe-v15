@@ -22,6 +22,7 @@ $(document).ready(function () {
 			),
 		});
 	}
+	$("#server_name").append(document.createTextNode("Test Server"))
 	frappe.start_app();
 });
 
