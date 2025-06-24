@@ -13,14 +13,17 @@ class Country(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+		from hrms.hr.doctype.country_dsa_detail.country_dsa_detail import CountryDSADetail
 
 		code: DF.Data | None
 		country_name: DF.Data
+		currency: DF.Link | None
 		date_format: DF.Data | None
+		disabled: DF.Check
+		items: DF.Table[CountryDSADetail]
 		time_format: DF.Data | None
 		time_zones: DF.Text | None
 	# end: auto-generated types
-
 	# NOTE: During installation country docs are bulk inserted.
 	pass
 
@@ -76,3 +79,4 @@ def get_countries_and_currencies():
 			)
 
 	return countries, currencies
+

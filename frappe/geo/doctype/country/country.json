@@ -8,49 +8,90 @@
  "document_type": "Setup",
  "engine": "InnoDB",
  "field_order": [
-  "country_name",
-  "date_format",
-  "time_format",
-  "time_zones",
-  "code"
- ],
- "fields": [
-  {
-   "fieldname": "country_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Country Name",
-   "oldfieldname": "country_name",
-   "oldfieldtype": "Data",
-   "reqd": 1,
-   "unique": 1
-  },
-  {
-   "fieldname": "date_format",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Date Format"
-  },
-  {
-   "default": "HH:mm:ss",
-   "fieldname": "time_format",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Time format"
-  },
-  {
-   "fieldname": "time_zones",
-   "fieldtype": "Text",
-   "in_list_view": 1,
-   "label": "Time Zones"
-  },
-  {
-   "fieldname": "code",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Code"
-  }
- ],
+    "country_name",
+    "currency",
+    "column_break_ensu",
+    "disabled",
+    "section_break_vkpp",
+    "items",
+    "section_break_zbzn",
+    "date_format",
+    "time_format",
+    "time_zones",
+    "code",
+    "column_break_kysw"
+   ],
+   "fields": [
+    {
+     "fieldname": "country_name",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Country Name",
+     "oldfieldname": "country_name",
+     "oldfieldtype": "Data",
+     "reqd": 1,
+     "unique": 1
+    },
+    {
+     "fieldname": "date_format",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Date Format"
+    },
+    {
+     "default": "HH:mm:ss",
+     "fieldname": "time_format",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Time format"
+    },
+    {
+     "fieldname": "time_zones",
+     "fieldtype": "Text",
+     "in_list_view": 1,
+     "label": "Time Zones"
+    },
+    {
+     "fieldname": "code",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Code"
+    },
+    {
+     "fieldname": "section_break_vkpp",
+     "fieldtype": "Section Break"
+    },
+    {
+     "fieldname": "items",
+     "fieldtype": "Table",
+     "label": "DSA Detail",
+     "options": "Country DSA Detail"
+    },
+    {
+     "fieldname": "section_break_zbzn",
+     "fieldtype": "Section Break"
+    },
+    {
+     "fieldname": "column_break_kysw",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fieldname": "currency",
+     "fieldtype": "Link",
+     "label": "Currency",
+     "options": "Currency"
+    },
+    {
+     "fieldname": "column_break_ensu",
+     "fieldtype": "Column Break"
+    },
+    {
+     "default": "0",
+     "fieldname": "disabled",
+     "fieldtype": "Check",
+     "label": "Disabled"
+    }
+   ],
  "icon": "fa fa-globe",
  "idx": 1,
  "links": [],
