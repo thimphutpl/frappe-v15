@@ -171,7 +171,7 @@
  ],
  "hide_toolbar": 1,
  "links": [],
- "modified": "2024-01-30 17:08:05.566686",
+ "modified": "2025-08-11 15:16:48.227222",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "Data Import",
@@ -187,6 +187,17 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
    "share": 1,
    "write": 1
   }
