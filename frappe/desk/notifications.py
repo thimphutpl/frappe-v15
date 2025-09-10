@@ -265,6 +265,7 @@ def get_open_count(doctype: str, name: str, items=None):
 
 
 def _get_linked_document_counts(doctype: str, name: str, items=None):
+	# frappe.throw(str(doctype))
 	doc = frappe.get_doc(doctype, name)
 	doc.check_permission()
 	meta = doc.meta

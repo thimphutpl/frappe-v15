@@ -46,8 +46,8 @@ def get_list(
 	:param order_by: Order by this fieldname
 	:param limit_start: Start at this index
 	:param limit_page_length: Number of records to be returned (default 20)"""
-	if frappe.is_table(doctype):
-		check_parent_permission(parent, doctype)
+	# if frappe.is_table(doctype):
+	# 	check_parent_permission(parent, doctype)
 
 	args = frappe._dict(
 		doctype=doctype,
@@ -62,6 +62,7 @@ def get_list(
 		debug=debug,
 		as_list=not as_dict,
 	)
+	
 
 	validate_args(args)
 	return frappe.get_list(**args)

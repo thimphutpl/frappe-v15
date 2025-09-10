@@ -40,6 +40,7 @@ AUTOMATIC_ROLES = (GUEST_ROLE, ALL_USER_ROLE, SYSTEM_USER_ROLE, ADMIN_ROLE)
 def print_has_permission_check_logs(func):
 	@functools.wraps(func)
 	def inner(*args, **kwargs):
+		
 		raise_exception = kwargs.get("raise_exception", True)
 		self_perm_check = True if not kwargs.get("user") else kwargs.get("user") == frappe.session.user
 
@@ -133,7 +134,7 @@ def has_permission(
 			msg = _("User {0} does not have access to this document").format(frappe.bold(user))
 			if frappe.has_permission(doc.doctype):
 				msg += f": {_(doc.doctype)} - {doc.name}"
-			push_perm_check_log(msg, debug=debug)
+				push_perm_check_log(msg, debug=debug)
 	else:
 		if ptype == "submit" and not cint(meta.is_submittable):
 			push_perm_check_log(_("Document Type is not submittable"), debug=debug)
@@ -412,6 +413,8 @@ def has_user_permission(doc, user=None, debug=False, ptype=None):
 						d.idx,
 						_(field.label, context=field.parent) if field.label else field.fieldname,
 					)
+					push_perm_check_log(msg, debug=debug)
+
 				else:
 					# "You are not allowed to access Company 'Restricted Company' in field Reference Type"
 					msg = _(
@@ -422,9 +425,10 @@ def has_user_permission(doc, user=None, debug=False, ptype=None):
 						d.get(field.fieldname) or _("empty"),
 						_(field.label, context=field.parent) if field.label else field.fieldname,
 					)
+					push_perm_check_log(msg, debug=debug)
 
-				push_perm_check_log(msg, debug=debug)
 
+				
 				return False
 
 		return True
@@ -891,3 +895,7 @@ def _get_parent_and_ancestors(doctype, parent):
 	from frappe.utils.nestedset import get_ancestors_of
 
 	yield from get_ancestors_of(doctype, parent)
+
+def set_user_permission_if_allowed(doctype, name, user, with_message=False):
+	if get_role_permissions(frappe.get_meta(doctype), user).set_user_permissions != 1:
+		add_user_permission(doctype, name, user)

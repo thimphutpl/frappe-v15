@@ -55,7 +55,7 @@ def update_nsm(doc):
 		update_add_node(doc, parent or "", parent_field)
 	elif old_parent != parent:
 		update_move_node(doc, parent_field)
-
+	# frappe.throw("hi")
 	# set old parent
 	doc.set(old_parent_field, parent)
 	frappe.db.set_value(doc.doctype, doc.name, old_parent_field, parent or "", update_modified=False)

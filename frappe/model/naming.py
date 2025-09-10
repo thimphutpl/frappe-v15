@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, Optional
 import frappe
 from frappe import _
 from frappe.model import log_types
-from frappe.monitor import get_trace_id
 from frappe.query_builder import DocType
 from frappe.utils import cint, cstr, now_datetime
 
@@ -237,13 +236,17 @@ def set_naming_from_document_naming_rule(doc):
 
 def set_name_by_naming_series(doc):
 	"""Sets name by the `naming_series` property"""
+	
 	if not doc.naming_series:
 		doc.naming_series = get_default_naming_series(doc.doctype)
 
 	if not doc.naming_series:
 		frappe.throw(frappe._("Naming Series mandatory"))
 
-	doc.name = make_autoname(doc.naming_series + ".#####", "", doc)
+	doc.name = make_autoname(doc.naming_series + ".###", "", doc)
+
+	# if doc.old_employee_id:
+	# 	doc.name= doc.old_employee_id
 
 
 def make_autoname(key="", doctype="", doc="", *, ignore_validate=False):
@@ -265,7 +268,7 @@ def make_autoname(key="", doctype="", doc="", *, ignore_validate=False):
 	                DE/09/01/00001 where 09 is the year, 01 is the month and 00001 is the series
 	"""
 	if key == "hash":
-		return (_get_timestamp_prefix() + _generate_random_string(7))[:10]
+		return _generate_random_string(10)
 
 	series = NamingSeries(key)
 	return series.generate_next_name(doc, ignore_validate=ignore_validate)
@@ -275,14 +278,7 @@ def _get_timestamp_prefix():
 	ts = int(time.time() * 10)  # time in deciseconds
 	# we ~~don't need~~ can't get ordering over entire lifetime, so we wrap the time.
 	ts = ts % (32**4)
-	ts_part = base64.b32hexencode(ts.to_bytes(length=5, byteorder="big")).decode()[-3:].lower()
-
-	# First character is from request/job specific UUID, all documents created in this "session" will
-	# have same prefix. This avoids collision between parallel jobs with reasonable probabililistic
-	# guarantees.
-	request_part = (get_trace_id() or "")[-1:]
-
-	return request_part + ts_part
+	return base64.b32hexencode(ts.to_bytes(length=5, byteorder="big")).decode()[-4:].lower()
 
 
 def _generate_random_string(length=10):
@@ -450,7 +446,7 @@ def revert_series_if_last(key, name, doc=None):
 def get_default_naming_series(doctype: str) -> str | None:
 	"""get default value for `naming_series` property"""
 	naming_series_options = frappe.get_meta(doctype).get_naming_series_options()
-
+	
 	# Return first truthy options
 	# Empty strings are used to avoid populating forms by default
 	for option in naming_series_options:
@@ -520,7 +516,9 @@ def _set_amended_name(doc):
 		"Amended Document Naming Settings", {"document_type": doc.doctype}, "action", cache=True
 	)
 	if not amend_naming_rule:
-		amend_naming_rule = frappe.get_single_value("Document Naming Settings", "default_amend_naming")
+		amend_naming_rule = frappe.db.get_single_value(
+			"Document Naming Settings", "default_amend_naming", cache=True
+		)
 
 	if amend_naming_rule == "Default Naming":
 		return

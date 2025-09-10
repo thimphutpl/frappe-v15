@@ -9,6 +9,8 @@
  "field_order": [
   "user_details_tab",
   "enabled",
+  "account_type",
+  "login_id",
   "section_break_3",
   "email",
   "first_name",
@@ -43,6 +45,11 @@
   "bio",
   "column_break_22",
   "mobile_no",
+  "alternate_mobile_no",
+  "section_break_bidw",
+  "profile_submitted",
+  "column_break_fhao",
+  "profile_verified",
   "settings_tab",
   "desk_settings_section",
   "mute_sounds",
@@ -743,8 +750,7 @@
    "description": "Redirect to the selected app after login",
    "fieldname": "default_app",
    "fieldtype": "Select",
-   "label": "Default App",
-   "options": ""
+   "label": "Default App"
   },
   {
    "collapsible": 1,
@@ -811,6 +817,47 @@
    "fieldname": "dashboard",
    "fieldtype": "Check",
    "label": "Dashboard"
+  },
+  {
+   "default": "ERP",
+   "fieldname": "account_type",
+   "fieldtype": "Select",
+   "label": "Account Type",
+   "options": "CRM\nERP",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "alternate_mobile_no",
+   "fieldtype": "Data",
+   "label": "Alternate Mobile No"
+  },
+  {
+   "fieldname": "section_break_bidw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "profile_submitted",
+   "fieldtype": "Check",
+   "label": "Profile Submitted",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fhao",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "profile_verified",
+   "fieldtype": "Check",
+   "label": "Profile Verified",
+   "read_only": 1
+  },
+  {
+   "fieldname": "login_id",
+   "fieldtype": "Data",
+   "label": "CID/License No"
   }
  ],
  "icon": "fa fa-user",
@@ -874,7 +921,7 @@
   }
  ],
  "make_attachments_public": 1,
- "modified": "2025-03-17 11:29:39.254304",
+ "modified": "2025-08-27 23:29:14.785102",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "User",

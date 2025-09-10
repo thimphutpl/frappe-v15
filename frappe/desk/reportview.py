@@ -115,7 +115,6 @@ def validate_fields(data):
 			continue
 
 		meta, df = get_meta_and_docfield(fieldname, data)
-
 		if not df:
 			if wildcard:
 				continue
