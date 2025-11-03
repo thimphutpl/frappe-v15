@@ -716,3 +716,22 @@ def validate_api_key_secret(api_key, api_secret, frappe_authorization_source=Non
 def validate_auth_via_hooks():
 	for auth_hook in frappe.get_hooks("auth_hooks", []):
 		frappe.get_attr(auth_hook)()
+
+##
+# ADDED BY KINLEY TTPLNRDCL
+##
+@frappe.whitelist()
+def get_loggedin_user_details():
+	user = frappe.get_doc("User", frappe.session.user)
+	frappe.local.response['login_id'] = user.login_id
+	frappe.local.response['username'] = user.username
+	frappe.local.response['mobile_no'] = user.mobile_no
+	frappe.local.response['first_name'] = user.first_name
+	frappe.local.response['api_key'] = user.api_key
+	frappe.local.response['api_secret'] = user.get_password('api_secret')
+	frappe.local.response['mode_preference'] = user.mode_preference
+	frappe.local.response['blacklisted'] = user.blacklisted
+	frappe.local.response['profile_verified'] = user.profile_verified
+	frappe.local.response['profile_submitted'] = user.profile_submitted
+	frappe.local.response['is_license'] = user.is_license
+

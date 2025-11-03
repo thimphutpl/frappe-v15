@@ -73,6 +73,7 @@ class User(Document):
 		banner_image: DF.AttachImage | None
 		bio: DF.SmallText | None
 		birth_date: DF.Date | None
+		blacklisted: DF.Check
 		block_modules: DF.Table[BlockModule]
 		bulk_actions: DF.Check
 		bypass_restrict_ip_check_if_2fa_enabled: DF.Check
@@ -97,6 +98,7 @@ class User(Document):
 		gender: DF.Link | None
 		home_settings: DF.Code | None
 		interest: DF.SmallText | None
+		is_license: DF.Check
 		language: DF.Link | None
 		last_active: DF.Datetime | None
 		last_ip: DF.ReadOnly | None
@@ -113,6 +115,7 @@ class User(Document):
 		logout_all_sessions: DF.Check
 		middle_name: DF.Data | None
 		mobile_no: DF.Data | None
+		mode_preference: DF.Literal["Both", "Customer", "Transporter"]
 		module_profile: DF.Link | None
 		mute_sounds: DF.Check
 		new_password: DF.Password | None
@@ -179,8 +182,8 @@ class User(Document):
 		self.__new_password = self.new_password
 		self.new_password = ""
 
-		if not frappe.flags.in_test:
-			self.password_strength_test()
+		# if not frappe.flags.in_test:
+		# 	self.password_strength_test()
 
 		if self.name not in STANDARD_USERS:
 			# self.email = self.name
@@ -1348,7 +1351,7 @@ def impersonate(user: str, reason: str):
 #--------------------------------------------------------------------------#
 
 @frappe.whitelist(allow_guest=True)
-def crm_sign_up(full_name, login_id, mobile_no, alternate_mobile_no, email, pin):
+def crm_sign_up(full_name, login_id, mobile_no, alternate_mobile_no, email, pin,is_license):
 	user = frappe.db.get("User", login_id.strip())
 	full_name = str(full_name).strip()
 	login_id  = str(login_id).strip()
@@ -1363,13 +1366,22 @@ def crm_sign_up(full_name, login_id, mobile_no, alternate_mobile_no, email, pin)
 	pin	  = str(pin).strip()
 	if user:
 		if user.disabled:
-			frappe.throw('Account Disabled')
+			# frappe.throw('Account Disabled')
+			frappe.response["http_status_code"] = 403  # Forbidden
+			frappe.response["message"] = "Account Disabled"
 		else:
-			frappe.throw("User {0} Already Registered".format(login_id))
+			# frappe.throw("User {0} Already Registered".format(login_id))
+			frappe.response["http_status_code"] = 403  # Forbidden
+			frappe.response["message"] = "User {0} Already Registered".format(login_id)
 	else:
 		if not frappe.db.sql("""select count(*) from `__PIN` where login_id= %(login_id)s 
 			and pin = password(concat(%(pin)s,salt))""", {'login_id':login_id, 'pin':pin})[0][0]:
-			frappe.throw("Invalid CID Number or PIN")
+			# frappe.throw("Invalid CID Number or PIN")
+			# frappe.msgprint("Invalid CID Number or PIN")
+			# return _("Invalid CID Number or PIN")
+			frappe.response["http_status_code"] = 403  # Forbidden
+			frappe.response["message"] = "Invalid CID Number or PIN"
+			return
 		
 		'''	
 		if frappe.db.sql("""select count(*) from tabUser where
@@ -1390,20 +1402,30 @@ def crm_sign_up(full_name, login_id, mobile_no, alternate_mobile_no, email, pin)
 			"alternate_mobile_no": alternate_mobile_no,
 			"email": email,
 			"enabled": 1,
-			# "new_password": pin,
-			"new_password": random_string(8),
+			"is_license": is_license,
+			"new_password": pin,
+			# "new_password": random_string(8),
 			"user_type": "System User",
 			"api_key": frappe.generate_hash(length=15),
 			"api_secret": frappe.generate_hash(length=15),
-			"user_roles": [{"role": "CRM User"}]
+			"roles": [{"role": "CRM User"}]
 		})
 		user.flags.ignore_permissions = True
 		user.save()
 
+		# if email:
+		# 	return _("Registration Details Emailed.")
+		# else:
+		# 	return _("You are successfully registered.")
 		if email:
-			return _("Registration Details Emailed.")
+			frappe.local.response["message"] = _("Registration Details Emailed.")
 		else:
-			return _("You are successfully registered.")
+			frappe.local.response["message"] = _("You are successfully registered.")
+
+		# Set HTTP status code to 200 (OK)
+		frappe.local.response["http_status_code"] = 200
+		frappe.local.response["status_code"] = 200
+		
 @frappe.whitelist(allow_guest=True)
 def send_pin(full_name, login_id, mobile_no, request_type="signup"):
 	pin = None
@@ -1422,7 +1444,7 @@ def send_pin(full_name, login_id, mobile_no, request_type="signup"):
 	elif request_type == "reset":
 		pin = create_pin(full_name, login_id, mobile_no)
 		user = frappe.get_doc("User", login_id)
-		user.new_password = pin
+		user.new_password = str(pin)
 		user.save(ignore_permissions=True)
 		message = "Dear "+user.full_name+", your PIN is reset to {0} for login id {1}".format(pin,login_id)
 		log_msg = "Dear "+user.full_name+", your PIN is reset to {0} for login id {1}".format(len(str(pin))*"*",login_id)
@@ -1431,6 +1453,9 @@ def send_pin(full_name, login_id, mobile_no, request_type="signup"):
 		send_sms(mobile_no, message, log_msg)
 		return _("An SMS sent with OTP.")
 	else:
+		# frappe.response["http_status_code"] = 403  # Forbidden
+		# frappe.response["message"] = "Something went wrong. Please contact administrator"
+		# return
 		frappe.throw("Something went wrong. Please contact administrator")
 
 def validate_mobile_no(mobile_no):
@@ -1461,7 +1486,11 @@ def validate_mobile_no(mobile_no):
 			errors = ["Invalid Mobile Number", "Invalid Data"]
 
 	if errors:
-		frappe.throw(errors[0])
+		frappe.response["http_status_code"] = 403  # Forbidden
+		frappe.response["message"] = errors[0]
+		return
+		# frappe.throw(errors[0])
+		
 	return "975"+str(mobile_no)[-8:]
 
 def create_pin(full_name, login_id, mobile_no):
@@ -1473,7 +1502,7 @@ def create_pin(full_name, login_id, mobile_no):
 	login_id = str(login_id).strip()
 	mobile_no = validate_mobile_no(mobile_no)
 	pin = random.randint(1000, 9999)
-	min_per_request = 1  # minutes
+	min_per_request = 0  # minutes
 
 	# Check rate limit
 	req = frappe.db.sql("""
@@ -1485,9 +1514,13 @@ def create_pin(full_name, login_id, mobile_no):
 	""".format(min_per_request), {'login_id': login_id, 'mobile_no': mobile_no[-8:]}, as_dict=True)
 
 	if req and flt(req[0].minutes_since_last) < flt(min_per_request):
-		frappe.throw(_("Only one request per {0} minute(s) permitted. Please try again after {1}").format(
+		# frappe.throw(_("Only one request per {0} minute(s) permitted. Please try again after {1}").format(
+		# 	min_per_request, req[0].next_request
+		# ))
+		frappe.msgprint(_("Only one request per {0} minute(s) permitted. Please try again after {1}").format(
 			min_per_request, req[0].next_request
 		))
+		return "Try After 1 min"
 
 	# Insert or update PIN record
 	frappe.db.sql("""
@@ -1543,6 +1576,32 @@ def create_sms_log(args, sent_to):
 	sl.flags.ignore_permissions = True
 	sl.save()
 
+@frappe.whitelist(allow_guest=True)
+def crm_reset_password(login_id, mobile_no):
+	login_id = str(login_id).strip()
+	mobile_no= str(mobile_no).strip()
+	if login_id=="Administrator":
+		return _("Not allowed to reset the password of {0}").format(user)
+
+	try:
+		mobile_no = validate_mobile_no(mobile_no)
+		if frappe.db.exists("User", login_id):
+			user = frappe.db.sql("""select name from `tabUser` where name = %(login_id)s
+				and substr(mobile_no,-8) = %(mobile_no)s""",{'login_id':login_id,'mobile_no':mobile_no[-8:]})
+			if user:
+				user = user[0][0]
+			else:
+				frappe.throw(_("Invalid combination of CID and Mobile Number"))
+
+			doc = frappe.get_doc("User", user)
+			send_pin(doc.full_name, doc.login_id, doc.mobile_no, request_type="reset")
+			return _("Password reset successful")
+		else:
+			frappe.throw(_("User {0} does not exist!").format(login_id))
+	except frappe.DoesNotExistError:
+		frappe.throw(_("User {0} does not exist!!!").format(login_id))
+
+
 def update_mobile_no(full_name, login_id, mobile_no):
 	pin 	  = None
 	message   = ""
@@ -1554,7 +1613,7 @@ def update_mobile_no(full_name, login_id, mobile_no):
 		pin = create_pin(full_name, login_id, mobile_no)
 		user = frappe.get_doc("User", login_id)
 		user.mobile_no = mobile_no
-		user.new_password = pin
+		user.new_password = str(pin)
 		user.save(ignore_permissions=True)
 		message = "Dear "+user.full_name+", your PIN is reset to {0} for login id {1}".format(pin,login_id)
 		log_msg = "Dear "+user.full_name+", your PIN is reset to {0} for login id {1}".format(len(str(pin))*"*",login_id)

@@ -11,11 +11,14 @@
   "enabled",
   "account_type",
   "login_id",
+  "is_license",
   "section_break_3",
   "email",
   "first_name",
   "middle_name",
   "last_name",
+  "mode_preference",
+  "blacklisted",
   "column_break0",
   "full_name",
   "username",
@@ -840,8 +843,7 @@
    "default": "0",
    "fieldname": "profile_submitted",
    "fieldtype": "Check",
-   "label": "Profile Submitted",
-   "read_only": 1
+   "label": "Profile Submitted"
   },
   {
    "fieldname": "column_break_fhao",
@@ -851,13 +853,33 @@
    "default": "0",
    "fieldname": "profile_verified",
    "fieldtype": "Check",
-   "label": "Profile Verified",
-   "read_only": 1
+   "label": "Profile Verified"
   },
   {
    "fieldname": "login_id",
    "fieldtype": "Data",
    "label": "CID/License No"
+  },
+  {
+   "default": "Both",
+   "fieldname": "mode_preference",
+   "fieldtype": "Select",
+   "label": "Mode Preference",
+   "options": "Both\nCustomer\nTransporter",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "blacklisted",
+   "fieldtype": "Check",
+   "label": "Blacklisted",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_license",
+   "fieldtype": "Check",
+   "label": "Is License"
   }
  ],
  "icon": "fa fa-user",
@@ -921,7 +943,7 @@
   }
  ],
  "make_attachments_public": 1,
- "modified": "2025-08-27 23:29:14.785102",
+ "modified": "2025-10-22 11:53:35.403293",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "User",
