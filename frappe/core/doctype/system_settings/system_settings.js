@@ -72,7 +72,7 @@ frappe.ui.form.on("System Settings", {
 
 		frappe.confirm(
 			msg,
-			() => {},
+			() => { },
 			() => {
 				frm.set_value("rounding_method", frappe.boot.sysdefaults.rounding_method);
 			}
