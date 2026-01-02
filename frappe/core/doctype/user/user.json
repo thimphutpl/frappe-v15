@@ -286,7 +286,7 @@
    "fieldtype": "Data",
    "label": "Mobile No",
    "options": "Phone",
-   "unique": 1
+   "unique": 0
   },
   {
    "fieldname": "birth_date",
