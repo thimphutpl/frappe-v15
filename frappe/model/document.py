@@ -348,12 +348,13 @@ class Document(BaseDocument):
 		return self
 
 	def check_if_locked(self):
+		# frappe.throw(str(file_lock.lock_age(self.get_signature())))
 		if not self.creation or not self.is_locked:
 			return
 
 		# Allow unlocking if created more than 60 minutes ago
 		primary_action = None
-		if file_lock.lock_age(self.get_signature()) > DOCUMENT_LOCK_SOFT_EXPIRY:
+		if file_lock.lock_age(self.get_signature()) > 1:
 			primary_action = {
 				"label": "Force Unlock",
 				"server_action": "frappe.model.document.unlock_document",

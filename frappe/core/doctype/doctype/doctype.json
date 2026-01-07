@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "Prompt",
  "creation": "2013-02-18 13:36:19",
@@ -673,12 +674,11 @@
    "label": "Sender Name Field"
   },
   {
-    "default": "50",
-    "depends_on": "istable",
-    "fieldname": "grid_page_length",
-    "fieldtype": "Int",
-    "label": "Grid Page Length",
-    "non_negative": 1
+   "default": "50",
+   "depends_on": "istable",
+   "fieldname": "grid_page_length",
+   "fieldtype": "Int",
+   "label": "Grid Page Length"
   },
   {
    "default": "Dynamic",
@@ -696,6 +696,7 @@
    "label": "Protect Attached Files"
   }
  ],
+ "grid_page_length": 50,
  "icon": "fa fa-bolt",
  "idx": 6,
  "index_web_pages_for_search": 1,
@@ -776,7 +777,7 @@
    "link_fieldname": "reference_doctype"
   }
  ],
- "modified": "2025-03-27 18:16:53.286909",
+ "modified": "2025-12-28 18:56:57.041685",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "DocType",

@@ -469,6 +469,12 @@ standard_navbar_items = [
 		"is_standard": 1,
 	},
 	{
+		"item_label": "Track Asset",
+		"item_type": "Route",
+		"route": "/check-status",
+		"is_standard": 1,
+	},
+	{
 		"item_label": "My Settings",
 		"item_type": "Action",
 		"action": "frappe.ui.toolbar.route_to_user()",
