@@ -105,6 +105,7 @@ def validate_args(data):
 
 def validate_fields(data):
 	wildcard = update_wildcard_field_param(data)
+	# frappe.throw(str(data.fields))
 
 	for field in list(data.fields or []):
 		fieldname = extract_fieldnames(field)[0]

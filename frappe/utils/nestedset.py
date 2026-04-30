@@ -229,8 +229,9 @@ def rebuild_node(doctype, parent, left, parent_field):
 
 def validate_loop(doctype, name, lft, rgt):
 	"""check if item not an ancestor (loop)"""
-	if name in frappe.get_all(doctype, filters={"lft": ["<=", lft], "rgt": [">=", rgt]}, pluck="name"):
-		frappe.throw(_("Item cannot be added to its own descendants"), NestedSetRecursionError)
+	pass
+	# if name in frappe.get_all(doctype, filters={"lft": ["<=", lft], "rgt": [">=", rgt]}, pluck="name"):
+	# 	frappe.throw(_("Item cannot be added to its own descendants"), NestedSetRecursionError)
 
 
 def remove_subtree(doctype: str, name: str, throw=True):
@@ -390,6 +391,7 @@ def get_ancestors_of(doctype, name, order_by="lft desc", limit=None):
 
 def get_descendants_of(doctype, name, order_by="lft desc", limit=None, ignore_permissions=False):
 	"""Return descendants of the current record"""
+	# frappe.throw(str(name))
 	lft, rgt = frappe.db.get_value(doctype, name, ["lft", "rgt"])
 
 	if rgt - lft <= 1:

@@ -5,11 +5,19 @@ import json
 from io import StringIO
 
 import requests
-
+# from __future__ import unicode_literals
 import frappe
 from frappe import _, msgprint
 from frappe.utils import cint, comma_or, cstr, flt
 
+def read_csv_content_from_uploaded_file(ignore_encoding=False):
+	if getattr(frappe, "uploaded_file", None):
+		with open(frappe.uploaded_file, "r") as upfile:
+			fcontent = upfile.read()
+	else:
+		from frappe.utils.file_manager import get_uploaded_content
+		fname, fcontent = get_uploaded_content()
+	return read_csv_content(fcontent, ignore_encoding)
 
 def read_csv_content_from_attached_file(doc):
 	fileid = frappe.get_all(
@@ -36,34 +44,34 @@ def read_csv_content_from_attached_file(doc):
 		)
 
 
-def read_csv_content(fcontent):
-	if not isinstance(fcontent, str):
+def read_csv_content(fcontent, ignore_encoding=False):
+	rows = []
+
+	if not isinstance(fcontent, unicode):
 		decoded = False
 		for encoding in ["utf-8", "windows-1250", "windows-1252"]:
 			try:
-				fcontent = str(fcontent, encoding)
+				fcontent = unicode(fcontent, encoding)
 				decoded = True
 				break
 			except UnicodeDecodeError:
 				continue
 
 		if not decoded:
-			frappe.msgprint(
-				_("Unknown file encoding. Tried utf-8, windows-1250, windows-1252."), raise_exception=True
-			)
+			frappe.msgprint(_("Unknown file encoding. Tried utf-8, windows-1250, windows-1252."),
+				raise_exception=True)
 
-	fcontent = fcontent.encode("utf-8")
-	content = [frappe.safe_decode(line) for line in fcontent.splitlines(True)]
+	fcontent = fcontent.encode("utf-8").splitlines(True)
 
 	try:
 		rows = []
-		for row in csv.reader(content):
+		for row in csv.reader(fcontent):
 			r = []
 			for val in row:
 				# decode everything
-				val = val.strip()
+				val = unicode(val, "utf-8").strip()
 
-				if val == "":
+				if val=="":
 					# reason: in maraidb strict config, one cannot have blank strings for non string datatypes
 					r.append(None)
 				else:
