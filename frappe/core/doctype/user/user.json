@@ -227,7 +227,7 @@
    "fieldname": "roles_html",
    "fieldtype": "HTML",
    "label": "Roles HTML",
-   "read_only": 1
+   "permlevel": 1
   },
   {
    "fieldname": "roles",
@@ -236,8 +236,7 @@
    "label": "Roles Assigned",
    "options": "Has Role",
    "permlevel": 1,
-   "print_hide": 1,
-   "read_only": 1
+   "print_hide": 1
   },
   {
    "collapsible": 1,
@@ -428,7 +427,8 @@
    "hidden": 1,
    "label": "Block Modules",
    "options": "Block Module",
-   "permlevel": 1
+   "permlevel": 1,
+   "print_hide": 1
   },
   {
    "fieldname": "home_settings",
@@ -620,10 +620,12 @@
    "options": "Light\nDark\nAutomatic"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "module_profile",
    "fieldtype": "Link",
    "label": "Module Profile",
-   "options": "Module Profile"
+   "options": "Module Profile",
+   "permlevel": 1
   },
   {
    "description": "Stores the datetime when the last reset password key was generated.",
@@ -796,7 +798,7 @@
    "link_fieldname": "user"
   }
  ],
- "modified": "2024-04-12 23:25:04.628007",
+ "modified": "2026-05-10 12:06:18.497003",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "User",
