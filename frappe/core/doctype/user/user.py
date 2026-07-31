@@ -1163,8 +1163,30 @@ def has_permission(doc, user):
 	if (user != "Administrator") and (doc.name in STANDARD_USERS):
 		# dont allow non Administrator user to view / edit Administrator user
 		return False
-	if "HR Manager" in roles or "HR User" in roles or "ICT Admin" in roles:
-		return True
+	# if "HR Manager" in roles or "HR User" in roles or "ICT Admin" in roles:
+	# 	return True
+
+	if any(role in roles for role in ["HR Manager", "HR User", "ICT Admin"]):
+
+		# Current login user's company from Employee
+		user_company = frappe.db.get_value(
+			"Employee",
+			{"user_id": user},
+			"company"
+		)
+
+		# Target User's company from Employee
+		target_company = frappe.db.get_value(
+			"Employee",
+			{"user_id": doc.name},
+			"company"
+		)
+
+		# Same company only
+		if user_company and user_company == target_company:
+			return True
+
+		return False
 	return True
 
 
