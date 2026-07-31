@@ -1160,12 +1160,8 @@ def get_permission_query_conditions(user=None):
         user = frappe.session.user
 
     roles = frappe.get_roles(user)
-
-    # Full access only
     if "System Manager" in roles or user == "Administrator":
         return ""
-
-    # HR / ICT users: filter by Employee company
     if any(role in roles for role in [
         "HR Manager",
         "HR User",
@@ -1177,6 +1173,7 @@ def get_permission_query_conditions(user=None):
             {"user_id": user},
             "company"
         )
+		
 
         if company:
             return f"""
@@ -1186,6 +1183,7 @@ def get_permission_query_conditions(user=None):
                     WHERE company = {frappe.db.escape(company)}
                 )
             """
+        
 
         return "1=0"
 
