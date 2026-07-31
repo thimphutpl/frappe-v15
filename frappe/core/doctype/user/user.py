@@ -1163,7 +1163,7 @@ def has_permission(doc, user):
 	if (user != "Administrator") and (doc.name in STANDARD_USERS):
 		# dont allow non Administrator user to view / edit Administrator user
 		return False
-	if "HR Manager" in roles or "HR User" in roles:
+	if "HR Manager" in roles or "HR User" in roles or "ICT Admin" in roles:
 		return True
 	return True
 
