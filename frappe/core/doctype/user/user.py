@@ -807,10 +807,10 @@ def update_password(
 	"""Update password for the current user.
 
 	Args:
-	    new_password (str): New password.
-	    logout_all_sessions (int, optional): If set to 1, all other sessions will be logged out. Defaults to 0.
-	    key (str, optional): Password reset key. Defaults to None.
-	    old_password (str, optional): Old password. Defaults to None.
+		new_password (str): New password.
+		logout_all_sessions (int, optional): If set to 1, all other sessions will be logged out. Defaults to 0.
+		key (str, optional): Password reset key. Defaults to None.
+		old_password (str, optional): Old password. Defaults to None.
 	"""
 
 	if len(new_password) > MAX_PASSWORD_SIZE:
@@ -1043,21 +1043,21 @@ def user_query(doctype, txt, searchfield, start, page_len, filters):
 	txt = f"%{txt}%"
 	return frappe.db.sql(
 		"""SELECT `name`, CONCAT_WS(' ', first_name, middle_name, last_name)
-        FROM `tabUser`
-        WHERE `enabled`=1
-            {user_type_condition}
-            AND `docstatus` < 2
-            AND `name` NOT IN ({standard_users})
-            AND ({key} LIKE %(txt)s
-                OR CONCAT_WS(' ', first_name, middle_name, last_name) LIKE %(txt)s)
-            {fcond} {mcond}
-        ORDER BY
-            CASE WHEN `name` LIKE %(txt)s THEN 0 ELSE 1 END,
-            CASE WHEN concat_ws(' ', first_name, middle_name, last_name) LIKE %(txt)s
-                THEN 0 ELSE 1 END,
-            NAME asc
-        LIMIT %(page_len)s OFFSET %(start)s
-    """.format(
+		FROM `tabUser`
+		WHERE `enabled`=1
+			{user_type_condition}
+			AND `docstatus` < 2
+			AND `name` NOT IN ({standard_users})
+			AND ({key} LIKE %(txt)s
+				OR CONCAT_WS(' ', first_name, middle_name, last_name) LIKE %(txt)s)
+			{fcond} {mcond}
+		ORDER BY
+			CASE WHEN `name` LIKE %(txt)s THEN 0 ELSE 1 END,
+			CASE WHEN concat_ws(' ', first_name, middle_name, last_name) LIKE %(txt)s
+				THEN 0 ELSE 1 END,
+			NAME asc
+		LIMIT %(page_len)s OFFSET %(start)s
+	""".format(
 			user_type_condition=user_type_condition,
 			standard_users=", ".join(frappe.db.escape(u) for u in STANDARD_USERS),
 			key=searchfield,
@@ -1121,25 +1121,54 @@ def get_active_website_users():
 	"""Return number of website users who logged in, in the last 3 days."""
 	return frappe.db.sql(
 		"""select count(*) from `tabUser`
-        where enabled = 1 and user_type = 'Website User'
-        and hour(timediff(now(), last_active)) < 72"""
+		where enabled = 1 and user_type = 'Website User'
+		and hour(timediff(now(), last_active)) < 72"""
 	)[0][0]
 
 
-def get_permission_query_conditions(user):
-	if user == "Administrator":
+# def get_permission_query_conditions(user):
+# 	if user == "Administrator":
+# 		return ""
+# 	else:
+# 		return """(`tabUser`.name not in ({standard_users}))""".format(
+# 			standard_users=", ".join(frappe.db.escape(user) for user in STANDARD_USERS)
+# 		)
+
+
+# def has_permission(doc, user):
+# 	if (user != "Administrator") and (doc.name in STANDARD_USERS):
+# 		# dont allow non Administrator user to view / edit Administrator user
+# 		return False
+# 	return True
+
+def get_permission_query_conditions(user=None):
+	if not user:
+		user = frappe.session.user
+
+	roles = frappe.get_roles(user)
+
+	if "System Manager" in roles or "HR Manager" in roles or "HR User" in roles:
 		return ""
-	else:
-		return """(`tabUser`.name not in ({standard_users}))""".format(
-			standard_users=", ".join(frappe.db.escape(user) for user in STANDARD_USERS)
-		)
+
+	return f"""
+		`tabUser`.name = {frappe.db.escape(user)}
+	"""
 
 
 def has_permission(doc, user):
+	if not user:
+		user = frappe.session.user
+
+	roles = frappe.get_roles(user)
 	if (user != "Administrator") and (doc.name in STANDARD_USERS):
 		# dont allow non Administrator user to view / edit Administrator user
 		return False
+	if "HR Manager" in roles or "HR User" in roles:
+		return True
 	return True
+
+
+
 
 
 def notify_admin_access_to_system_manager(login_manager=None):
