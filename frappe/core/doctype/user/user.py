@@ -1141,18 +1141,58 @@ def get_active_website_users():
 # 		return False
 # 	return True
 
+# def get_permission_query_conditions(user=None):
+# 	if not user:
+# 		user = frappe.session.user
+
+# 	roles = frappe.get_roles(user)
+
+# 	if "System Manager" in roles or "HR Manager" in roles or "HR User" in roles or "ICT Admin" in  roles:
+# 		return ""
+
+# 	return f"""
+# 		`tabUser`.name = {frappe.db.escape(user)}
+# 	"""
+
+
 def get_permission_query_conditions(user=None):
-	if not user:
-		user = frappe.session.user
+    if not user:
+        user = frappe.session.user
 
-	roles = frappe.get_roles(user)
+    roles = frappe.get_roles(user)
 
-	if "System Manager" in roles or "HR Manager" in roles or "HR User" in roles or "ICT Admin" in  roles:
-		return ""
+    # Full access only
+    if "System Manager" in roles or user == "Administrator":
+        return ""
 
-	return f"""
-		`tabUser`.name = {frappe.db.escape(user)}
-	"""
+    # HR / ICT users: filter by Employee company
+    if any(role in roles for role in [
+        "HR Manager",
+        "HR User",
+        "ICT Admin"
+    ]):
+
+        company = frappe.db.get_value(
+            "Employee",
+            {"user_id": user},
+            "company"
+        )
+
+        if company:
+            return f"""
+                `tabUser`.name IN (
+                    SELECT user_id
+                    FROM `tabEmployee`
+                    WHERE company = {frappe.db.escape(company)}
+                )
+            """
+
+        return "1=0"
+
+    # Normal users only see themselves
+    return f"""
+        `tabUser`.name = {frappe.db.escape(user)}
+    """
 
 
 def has_permission(doc, user):
@@ -1163,30 +1203,8 @@ def has_permission(doc, user):
 	if (user != "Administrator") and (doc.name in STANDARD_USERS):
 		# dont allow non Administrator user to view / edit Administrator user
 		return False
-	# if "HR Manager" in roles or "HR User" in roles or "ICT Admin" in roles:
-	# 	return True
-
-	if any(role in roles for role in ["HR Manager", "HR User", "ICT Admin"]):
-
-		# Current login user's company from Employee
-		user_company = frappe.db.get_value(
-			"Employee",
-			{"user_id": user},
-			"company"
-		)
-
-		# Target User's company from Employee
-		target_company = frappe.db.get_value(
-			"Employee",
-			{"user_id": doc.name},
-			"company"
-		)
-
-		# Same company only
-		if user_company and user_company == target_company:
-			return True
-
-		return False
+	if "HR Manager" in roles or "HR User" in roles or "ICT Admin" in roles:
+		return True
 	return True
 
 
