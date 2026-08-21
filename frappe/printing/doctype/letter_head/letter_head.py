@@ -17,6 +17,7 @@ class LetterHead(Document):
 		from frappe.types import DF
 
 		align: DF.Literal["Left", "Right", "Center"]
+		company: DF.Link | None
 		content: DF.HTMLEditor | None
 		disabled: DF.Check
 		footer: DF.HTMLEditor | None

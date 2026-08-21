@@ -10,6 +10,7 @@
   "letter_head_name",
   "source",
   "footer_source",
+  "company",
   "column_break_3",
   "disabled",
   "is_default",
@@ -193,6 +194,12 @@
    "fieldtype": "HTML",
    "label": "Instructions",
    "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
   }
  ],
  "icon": "fa fa-font",
@@ -200,7 +207,7 @@
  "links": [],
  "make_attachments_public": 1,
  "max_attachments": 3,
- "modified": "2024-04-12 10:30:25.793932",
+ "modified": "2026-08-14 09:30:01.615923",
  "modified_by": "Administrator",
  "module": "Printing",
  "name": "Letter Head",
