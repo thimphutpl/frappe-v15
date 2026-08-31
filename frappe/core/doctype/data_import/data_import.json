@@ -46,7 +46,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Import Type",
-   "options": "\nInsert New Records\nUpdate Existing Records",
+   "options": "\nInsert New Records\nUpdate Existing Records\nInsert Child Records",
    "reqd": 1,
    "set_only_once": 1
   },
@@ -187,7 +187,7 @@
  ],
  "hide_toolbar": 1,
  "links": [],
- "modified": "2024-04-27 20:42:35.843158",
+ "modified": "2026-07-17 13:50:24.304408",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "Data Import",
